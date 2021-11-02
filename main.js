@@ -319,3 +319,21 @@ const countries = [
        
     },
 ];
+
+const header = document.querySelector('.header');
+
+function addContentToTable(el){
+    header.insertAdjacentHTML('afterend', `
+        <div class="row">
+            <input type="checkbox" name="checkbox-row">
+            <div class="id hd"><p>${el.id}</p></div>
+            <div class="name hd"><p>${el.name}</p></div>
+            <div class="iso hd"><p>${el.iso3}</p></div>
+            <div class="code hd"><p>${el.phone_code}</p></div>
+            <div class="currency hd">${el.currency}<p></p></div>
+            <div class="capital hd"><p>${el.capital}</p></div>
+        </div>
+    `);
+}
+
+document.addEventListener( "DOMContentLoaded", (event) => {countries.forEach(el => addContentToTable(el))});
