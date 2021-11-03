@@ -1,3 +1,10 @@
+body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: sans-serif;
+}
+
 .table-wrapper {
   display: flex;
   flex-direction: column;
@@ -11,12 +18,43 @@
   align-items: center;
 }
 
-input {
-  margin: 0px 15px;
+.header > div {
+  padding: 0px 0px 0px 5px;
 }
 
-.header > div {
-  margin: 0px 15px;
+.header > div > p {
+  font-weight: 600;
+}
+
+.separator {
+  margin: 0px 0px;
+  font-size: 25px;
+  font-weight: 800;
+  color: grey;
+}
+
+.hd {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.header-menu-wrapper > img {
+  width: 20px;
+  height: 20px;
+  border-radius: 50px;
+}
+
+.header-menu-wrapper > img:hover {
+  box-shadow: 2px 2px 4px 2px rgba(0, 0, 0, 0.333);
+}
+
+.header-menu-wrapper {
+  width: 50px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .row {
@@ -24,4 +62,37 @@ input {
   flex-direction: row;
   justify-content: flex-start;
   align-items: center;
+}
+
+.row > div {
+  margin: 0px 5px 0px 0px;
+  padding: 0px 0px 0px 6px;
+}
+
+.table-wrapper .checkbox {
+  min-width: 50px;
+}
+
+.table-wrapper .id {
+  min-width: 100px;
+}
+
+.table-wrapper .iso,
+.table-wrapper .code,
+.table-wrapper .currency {
+  min-width: 150px;
+}
+
+.table-wrapper .name,
+.table-wrapper .capital {
+  min-width: 200px;
+}
+
+.table-wrapper > div {
+  border: 0.25px solid grey;
+}
+
+.table-wrapper input {
+  width: 20px;
+  height: 20px;
 }
