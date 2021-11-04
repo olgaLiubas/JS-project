@@ -323,3 +323,92 @@ function addContentToTable(el) {
 document.addEventListener("DOMContentLoaded", (event) => {
   countries.forEach((el) => addContentToTable(el));
 });
+
+let dropdowns = document.querySelectorAll(".dropdown");
+// console.log(dropdowns);
+dropdowns.forEach((dropdown) => {
+  dropdown.addEventListener("click", (event) => {
+    addActiveClass(event);
+  });
+});
+
+function addActiveClass(event) {
+  const dropdownsContent = document.getElementsByClassName("dropdown-content");
+  // console.log(dropdownsContent);
+  // console.log(event.target.nextElementSibling.className);
+  if (!event.target.nextElementSibling.className.includes("active")) {
+    Array.from(dropdownsContent).forEach((el) => {
+      if (el !== event.target.nextElementSibling) {
+        el.classList.remove("active");
+      }
+    });
+    event.target.nextElementSibling.classList.add("active");
+  } else {
+    event.target.nextElementSibling.classList.remove("active");
+  }
+}
+
+let sortingACSItems = document.getElementsByClassName("sort-asc");
+
+Array.from(sortingACSItems).forEach((item) => {
+  item.addEventListener("click", (event) => {
+    sortByASC(event);
+  });
+});
+
+function sortByASC(event) {
+  let id = event.target.parentElement.parentElement.id.slice(9);
+  console.log(`Sort by ASC from ${id}`);
+}
+
+let sortingDESCItems = document.getElementsByClassName("sort-desc");
+
+Array.from(sortingDESCItems).forEach((item) => {
+  item.addEventListener("click", (event) => {
+    sortByDESC(event);
+  });
+});
+
+function sortByDESC(event) {
+  let id = event.target.parentElement.parentElement.id.slice(9);
+  console.log(`Sort by DESC from ${id}`);
+}
+
+let filteringItems = document.getElementsByClassName("filter");
+
+Array.from(filteringItems).forEach((item) => {
+  item.addEventListener("click", (event) => {
+    filterRows(event);
+  });
+});
+
+function filterRows(event) {
+  let id = event.target.parentElement.parentElement.id.slice(9);
+  console.log(`Filter rows from ${id}`);
+}
+
+let hidingColumnItems = document.getElementsByClassName("hide-column");
+
+Array.from(hidingColumnItems).forEach((item) => {
+  item.addEventListener("click", (event) => {
+    hideColumn(event);
+  });
+});
+
+function hideColumn(event) {
+  let id = event.target.parentElement.parentElement.id.slice(9);
+  console.log(`Hide column from ${id}`);
+}
+
+let showingColumnsItems = document.getElementsByClassName("show-columns");
+
+Array.from(showingColumnsItems).forEach((item) => {
+  item.addEventListener("click", (event) => {
+    showColumns(event);
+  });
+});
+
+function showColumns(event) {
+  let id = event.target.parentElement.parentElement.id.slice(9);
+  console.log(`Show Show/Hide column menu from ${id}`);
+}
