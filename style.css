@@ -133,6 +133,7 @@ img.arrow-down:hover {
 .dropdown {
   position: relative;
   display: inline-block;
+  height: 18px;
 }
 
 .dropdown-content {

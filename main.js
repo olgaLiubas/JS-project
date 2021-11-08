@@ -324,7 +324,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
   countries.forEach((el) => addContentToTable(el));
 });
 
-let dropdowns = document.querySelectorAll(".dropdown");
+const dropdowns = document.querySelectorAll(".dropdown");
 // console.log(dropdowns);
 dropdowns.forEach((dropdown) => {
   dropdown.addEventListener("click", (event) => {
@@ -348,7 +348,7 @@ function addActiveClass(event) {
   }
 }
 
-let sortingACSItems = document.getElementsByClassName("sort-asc");
+const sortingACSItems = document.getElementsByClassName("sort-asc");
 
 Array.from(sortingACSItems).forEach((item) => {
   item.addEventListener("click", (event) => {
@@ -357,11 +357,11 @@ Array.from(sortingACSItems).forEach((item) => {
 });
 
 function sortByASC(event) {
-  let id = event.target.parentElement.parentElement.id.slice(9);
+  const id = event.target.parentElement.parentElement.id.slice(9);
   console.log(`Sort by ASC from ${id}`);
 }
 
-let sortingDESCItems = document.getElementsByClassName("sort-desc");
+const sortingDESCItems = document.getElementsByClassName("sort-desc");
 
 Array.from(sortingDESCItems).forEach((item) => {
   item.addEventListener("click", (event) => {
@@ -370,11 +370,11 @@ Array.from(sortingDESCItems).forEach((item) => {
 });
 
 function sortByDESC(event) {
-  let id = event.target.parentElement.parentElement.id.slice(9);
+  const id = event.target.parentElement.parentElement.id.slice(9);
   console.log(`Sort by DESC from ${id}`);
 }
 
-let filteringItems = document.getElementsByClassName("filter");
+const filteringItems = document.getElementsByClassName("filter");
 
 Array.from(filteringItems).forEach((item) => {
   item.addEventListener("click", (event) => {
@@ -383,11 +383,11 @@ Array.from(filteringItems).forEach((item) => {
 });
 
 function filterRows(event) {
-  let id = event.target.parentElement.parentElement.id.slice(9);
+  const id = event.target.parentElement.parentElement.id.slice(9);
   console.log(`Filter rows from ${id}`);
 }
 
-let hidingColumnItems = document.getElementsByClassName("hide-column");
+const hidingColumnItems = document.getElementsByClassName("hide-column");
 
 Array.from(hidingColumnItems).forEach((item) => {
   item.addEventListener("click", (event) => {
@@ -396,11 +396,11 @@ Array.from(hidingColumnItems).forEach((item) => {
 });
 
 function hideColumn(event) {
-  let id = event.target.parentElement.parentElement.id.slice(9);
+  const id = event.target.parentElement.parentElement.id.slice(9);
   console.log(`Hide column from ${id}`);
 }
 
-let showingColumnsItems = document.getElementsByClassName("show-columns");
+const showingColumnsItems = document.getElementsByClassName("show-columns");
 
 Array.from(showingColumnsItems).forEach((item) => {
   item.addEventListener("click", (event) => {
@@ -409,6 +409,6 @@ Array.from(showingColumnsItems).forEach((item) => {
 });
 
 function showColumns(event) {
-  let id = event.target.parentElement.parentElement.id.slice(9);
+  const id = event.target.parentElement.parentElement.id.slice(9);
   console.log(`Show Show/Hide column menu from ${id}`);
 }
