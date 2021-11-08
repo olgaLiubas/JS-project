@@ -300,7 +300,6 @@ const countries = [
   },
 ];
 
-// const header = document.querySelector(".header");
 const tableWrapper = document.querySelector(".table-wrapper");
 
 function addContentToTable(el) {
@@ -325,7 +324,6 @@ document.addEventListener("DOMContentLoaded", (event) => {
 });
 
 const dropdowns = document.querySelectorAll(".dropdown");
-// console.log(dropdowns);
 dropdowns.forEach((dropdown) => {
   dropdown.addEventListener("click", (event) => {
     addActiveClass(event);
@@ -334,8 +332,6 @@ dropdowns.forEach((dropdown) => {
 
 function addActiveClass(event) {
   const dropdownsContent = document.getElementsByClassName("dropdown-content");
-  // console.log(dropdownsContent);
-  // console.log(event.target.nextElementSibling.className);
   if (!event.target.nextElementSibling.className.includes("active")) {
     Array.from(dropdownsContent).forEach((el) => {
       if (el !== event.target.nextElementSibling) {
