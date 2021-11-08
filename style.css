@@ -11,6 +11,8 @@ body {
   justify-content: flex-start;
 }
 
+/* HEADER */
+
 .header {
   display: flex;
   flex-direction: row;
@@ -39,16 +41,6 @@ body {
   justify-content: space-between;
 }
 
-.header-menu-wrapper > img {
-  width: 20px;
-  height: 20px;
-  border-radius: 50px;
-}
-
-.header-menu-wrapper > img:hover {
-  box-shadow: 2px 2px 4px 2px rgba(0, 0, 0, 0.333);
-}
-
 .header-menu-wrapper {
   width: 50px;
   display: flex;
@@ -57,11 +49,50 @@ body {
   align-items: center;
 }
 
+/* SVGS */
+
+.header-menu-wrapper img {
+  width: 18px;
+  height: 18px;
+  border-radius: 50px;
+}
+
+.header-menu-wrapper img:hover {
+  background-color: rgba(128, 128, 128, 0.293);
+  border: rgba(128, 128, 128, 0.293);
+  box-shadow: 0px 0px 5px 3px rgba(128, 128, 128, 0.293);
+}
+
+img.dots {
+  transform: rotate(90deg);
+}
+
+img.dots:hover {
+  padding: 0px 1px 0px 0px;
+}
+
+img.arrow-down {
+  transform: rotate(180deg);
+}
+
+img.arrow-up:hover {
+  box-shadow: 0px 0px 5px 3px rgba(128, 128, 128, 0.293);
+  padding: 0px 0px 2px 0px;
+}
+
+img.arrow-down:hover {
+  box-shadow: 0px 0px 5px 3px rgba(128, 128, 128, 0.293);
+  padding: 0px 1px 2px 0px;
+}
+
+/* ROWS */
+
 .row {
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
   align-items: center;
+  height: 50px;
 }
 
 .row > div {
@@ -95,4 +126,52 @@ body {
 .table-wrapper input {
   width: 20px;
   height: 20px;
+}
+
+/* DROPDOWNS */
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+  height: 18px;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #ffffff;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+  z-index: 1;
+  margin: 15px 0px 0px 0px;
+  min-width: 150px;
+}
+
+.dropdown-item {
+  color: black;
+  padding: 15px 15px;
+  text-decoration: none;
+  display: block;
+}
+
+.dropdown-item:hover {
+  background-color: #ddd;
+}
+
+.active {
+  display: block;
+}
+
+.id .dropdown-content {
+  left: -100px;
+}
+
+.iso .dropdown-content,
+.code .dropdown-content,
+.currency .dropdown-content {
+  left: -125px;
+}
+
+.name .dropdown-content,
+.capital .dropdown-content {
+  left: -125px;
 }

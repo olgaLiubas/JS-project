@@ -300,7 +300,6 @@ const countries = [
   },
 ];
 
-// const header = document.querySelector(".header");
 const tableWrapper = document.querySelector(".table-wrapper");
 
 function addContentToTable(el) {
@@ -323,3 +322,89 @@ function addContentToTable(el) {
 document.addEventListener("DOMContentLoaded", (event) => {
   countries.forEach((el) => addContentToTable(el));
 });
+
+const dropdowns = document.querySelectorAll(".dropdown");
+dropdowns.forEach((dropdown) => {
+  dropdown.addEventListener("click", (event) => {
+    addActiveClass(event);
+  });
+});
+
+function addActiveClass(event) {
+  const dropdownsContent = document.getElementsByClassName("dropdown-content");
+  if (!event.target.nextElementSibling.className.includes("active")) {
+    Array.from(dropdownsContent).forEach((el) => {
+      if (el !== event.target.nextElementSibling) {
+        el.classList.remove("active");
+      }
+    });
+    event.target.nextElementSibling.classList.add("active");
+  } else {
+    event.target.nextElementSibling.classList.remove("active");
+  }
+}
+
+const sortingACSItems = document.getElementsByClassName("sort-asc");
+
+Array.from(sortingACSItems).forEach((item) => {
+  item.addEventListener("click", (event) => {
+    sortByASC(event);
+  });
+});
+
+function sortByASC(event) {
+  const id = event.target.parentElement.parentElement.id.slice(9);
+  console.log(`Sort by ASC from ${id}`);
+}
+
+const sortingDESCItems = document.getElementsByClassName("sort-desc");
+
+Array.from(sortingDESCItems).forEach((item) => {
+  item.addEventListener("click", (event) => {
+    sortByDESC(event);
+  });
+});
+
+function sortByDESC(event) {
+  const id = event.target.parentElement.parentElement.id.slice(9);
+  console.log(`Sort by DESC from ${id}`);
+}
+
+const filteringItems = document.getElementsByClassName("filter");
+
+Array.from(filteringItems).forEach((item) => {
+  item.addEventListener("click", (event) => {
+    filterRows(event);
+  });
+});
+
+function filterRows(event) {
+  const id = event.target.parentElement.parentElement.id.slice(9);
+  console.log(`Filter rows from ${id}`);
+}
+
+const hidingColumnItems = document.getElementsByClassName("hide-column");
+
+Array.from(hidingColumnItems).forEach((item) => {
+  item.addEventListener("click", (event) => {
+    hideColumn(event);
+  });
+});
+
+function hideColumn(event) {
+  const id = event.target.parentElement.parentElement.id.slice(9);
+  console.log(`Hide column from ${id}`);
+}
+
+const showingColumnsItems = document.getElementsByClassName("show-columns");
+
+Array.from(showingColumnsItems).forEach((item) => {
+  item.addEventListener("click", (event) => {
+    showColumns(event);
+  });
+});
+
+function showColumns(event) {
+  const id = event.target.parentElement.parentElement.id.slice(9);
+  console.log(`Show Show/Hide column menu from ${id}`);
+}
