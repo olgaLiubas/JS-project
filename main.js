@@ -393,7 +393,16 @@ Array.from(hidingColumnItems).forEach((item) => {
 
 function hideColumn(event) {
   const id = event.target.parentElement.parentElement.id.slice(9);
-  console.log(`Hide column from ${id}`);
+  const fieldsInRows = Array.from(document.getElementsByClassName(`${id}`));
+  const headerField =
+    event.target.parentElement.parentElement.parentElement.parentElement;
+  headerField.style.display = "none";
+  if (headerField.nextElementSibling) {
+    headerField.nextElementSibling.style.display = "none";
+  }
+  fieldsInRows.forEach((field) => {
+    field.hidden = true;
+  });
 }
 
 const showingColumnsItems = document.getElementsByClassName("show-columns");
