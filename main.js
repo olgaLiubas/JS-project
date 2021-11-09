@@ -300,6 +300,8 @@ const countries = [
   },
 ];
 
+//RENDERING ROWS
+
 const tableWrapper = document.querySelector(".table-wrapper");
 
 function addContentToTable(el) {
@@ -323,6 +325,8 @@ document.addEventListener("DOMContentLoaded", (event) => {
   countries.forEach((el) => addContentToTable(el));
 });
 
+//DROPDOWNS LOGIC
+
 const dropdowns = document.querySelectorAll(".dropdown");
 dropdowns.forEach((dropdown) => {
   dropdown.addEventListener("click", (event) => {
@@ -344,17 +348,62 @@ function addActiveClass(event) {
   }
 }
 
+// SORTING BY ASC/DESC
+
+function quickSort(arr, field) {
+  if (arr.length < 2) {
+    return arr;
+  } else {
+    const pivotPosition = Math.floor(Math.random() * arr.length);
+    const pivot = arr[pivotPosition];
+    let less = [];
+    let more = [];
+    if (field === "phone_code") {
+      less = arr.filter((value, index) => {
+        const isPivot = index === pivotPosition;
+        return (
+          !isPivot &&
+          value[field].replace(/[-+!@#$%^&*]/g, "") <=
+            pivot[field].replace(/[-+!@#$%^&*]/g, "")
+        );
+      });
+
+      more = arr.filter(
+        (value) =>
+          value[field].replace(/[-+!@#$%^&*]/g, "") >
+          pivot[field].replace(/[-+!@#$%^&*]/g, "")
+      );
+    } else {
+      less = arr.filter((value, index) => {
+        const isPivot = index === pivotPosition;
+        return !isPivot && value[field] <= pivot[field];
+      });
+
+      more = arr.filter((value) => value[field] > pivot[field]);
+    }
+    return [...quickSort(less, field), pivot, ...quickSort(more, field)];
+  }
+}
+
 const sortingACSItems = document.getElementsByClassName("sort-asc");
 
 Array.from(sortingACSItems).forEach((item) => {
   item.addEventListener("click", (event) => {
-    sortByASC(event);
+    sortByASC(event, countries);
   });
 });
 
 function sortByASC(event) {
-  const id = event.target.parentElement.parentElement.id.slice(9);
-  console.log(`Sort by ASC from ${id}`);
+  let id = event.target.parentElement.parentElement.id.slice(9);
+  if (id === "iso") {
+    id = "iso3";
+  }
+  if (id === "code") {
+    id = "phone_code";
+  }
+  const rows = document.getElementsByClassName("row");
+  Array.from(rows).forEach((el) => el.remove());
+  quickSort(countries, id).forEach((el) => addContentToTable(el));
 }
 
 const sortingDESCItems = document.getElementsByClassName("sort-desc");
@@ -366,9 +415,21 @@ Array.from(sortingDESCItems).forEach((item) => {
 });
 
 function sortByDESC(event) {
-  const id = event.target.parentElement.parentElement.id.slice(9);
-  console.log(`Sort by DESC from ${id}`);
+  let id = event.target.parentElement.parentElement.id.slice(9);
+  if (id === "iso") {
+    id = "iso3";
+  }
+  if (id === "code") {
+    id = "phone_code";
+  }
+  const rows = document.getElementsByClassName("row");
+  Array.from(rows).forEach((el) => el.remove());
+  quickSort(countries, id)
+    .reverse()
+    .forEach((el) => addContentToTable(el));
 }
+
+//FILTERING
 
 const filteringItems = document.getElementsByClassName("filter");
 
