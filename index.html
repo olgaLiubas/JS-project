@@ -10,6 +10,34 @@
 <body>
     <div class="table-wrapper">
         <div class="header">
+            <div class="filter-dropdown-hide" id="filter">
+                <p class="filter-cross">╳</p>
+                <div class="filter-item filter-column">
+                    <p>Columns</p>
+                    <select id="filter-select-columns">
+                        <option>Name</option>
+                        <option>Capital</option>
+                        <option>Phone code</option>
+                        <option>Currency</option>
+                        <option>ISO</option>
+                    </select>
+                </div>
+                <div class="filter-item filter-operators">
+                    <p>Operators</p>
+                    <select id="filter-select-operators">
+                        <option>contains</option>
+                        <option>equals</option>
+                        <option>starts with</option>
+                        <option>ends with</option>
+                        <option>is empty</option>
+                        <option>isn't empty</option>
+                    </select>
+                </div>
+                <div class="filter-item filter-value">
+                    <p>Value</p>
+                    <input placeholder="Filter value" id="filter-input">
+                </div>
+            </div>
             <div class="checkbox hd"><input type="checkbox" name="checkbox-header"></div>
             <p class="separator">|</p>
             <div class="id hd">
@@ -47,11 +75,11 @@
                 </div>
             </div>
             <p class="separator">|</p>
-            <div class="iso hd">
-                <p>ISO</p>
+            <div class="capital hd">
+                <p>Capital</p>
                 <div class="header-menu-wrapper">
                     <img src="img/arrow-pointing-up-svgrepo-com.svg" class="arrow-up" alt="pointer">
-                    <div class="dropdown" id="dropdown-iso">
+                    <div class="dropdown" id="dropdown-capital">
                         <img src="img/three-dots-svgrepo-com.svg" class="dots" alt="more">
                         <div class="dropdown-content">
                             <div class="dropdown-item sort-asc">Sort by ASC</div>
@@ -98,11 +126,11 @@
                 </div>
             </div>
             <p class="separator">|</p>
-            <div class="capital hd">
-                <p>Capital</p>
+            <div class="iso hd">
+                <p>ISO</p>
                 <div class="header-menu-wrapper">
                     <img src="img/arrow-pointing-up-svgrepo-com.svg" class="arrow-up" alt="pointer">
-                    <div class="dropdown" id="dropdown-capital">
+                    <div class="dropdown" id="dropdown-iso">
                         <img src="img/three-dots-svgrepo-com.svg" class="dots" alt="more">
                         <div class="dropdown-content">
                             <div class="dropdown-item sort-asc">Sort by ASC</div>
