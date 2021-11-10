@@ -300,9 +300,53 @@ const countries = [
   },
 ];
 
-//RENDERING ROWS
+//ALL VARIABLES
 
+//to rendering rows
 const tableWrapper = document.querySelector(".table-wrapper");
+
+//to dropdowns logic
+const dropdowns = document.querySelectorAll(".dropdown");
+const dropdownsContent = document.getElementsByClassName("dropdown-content");
+
+//to sorting
+const sortingACSItems = document.getElementsByClassName("sort-asc");
+const sortingDESCItems = document.getElementsByClassName("sort-desc");
+const rows = document.getElementsByClassName("row");
+
+//to filtering
+const filteringItems = document.getElementsByClassName("filter");
+const filterDropdown = document.getElementById("filter");
+const filterSelectColumns = document.getElementById("filter-select-columns");
+const filterSelectOperators = document.getElementById(
+  "filter-select-operators"
+);
+const filterInput = document.getElementById("filter-input");
+const filterButton = document.getElementById("filter-button");
+const filterCross = document.querySelector(".filter-cross");
+let column = "name";
+let operator = "contains";
+let inputValue;
+
+//hiding of column
+const hidingColumnItems = document.getElementsByClassName("hide-column");
+
+//showing of column
+const showingColumnsItems = document.getElementsByClassName("show-columns");
+
+//pagination
+let arrayToShow = JSON.parse(JSON.stringify(countries));
+const amountOfRowsSelector = document.querySelector(".amount-of-rows");
+const paginationInfoP = document.querySelector(".pagination-info");
+const backButton = document.querySelector(".back-button");
+const forwardButton = document.querySelector(".forward-button");
+let amountOfRows = 20;
+let paginationInfo = "Page: 1 of 1";
+let page = 1;
+let maxAmountOfPages = 1;
+let firstIndexToShow = 0;
+
+//RENDERING ROWS
 
 function addContentToTable(el) {
   tableWrapper.insertAdjacentHTML(
@@ -321,22 +365,31 @@ function addContentToTable(el) {
   );
 }
 
-document.addEventListener("DOMContentLoaded", (event) => {
-  countries.forEach((el) => addContentToTable(el));
-});
+document.addEventListener("DOMContentLoaded", (event) => showRows(countries));
+
+function showRows() {
+  maxAmountOfPages =
+    (arrayToShow.length - (arrayToShow.length % amountOfRows)) / amountOfRows;
+  for (let i = firstIndexToShow; i < firstIndexToShow + amountOfRows; i++) {
+    addContentToTable(arrayToShow[i]);
+  }
+}
 
 //DROPDOWNS LOGIC
-// const filterDropdown = document.getElementById("filter");
-const dropdowns = document.querySelectorAll(".dropdown");
+
 dropdowns.forEach((dropdown) => {
-  dropdown.addEventListener("click", (event) => {
-    addActiveClass(event);
-  });
+  dropdown.addEventListener(
+    "click",
+    (event) => {
+      addActiveClass(event);
+    },
+    true
+  );
 });
 
 function addActiveClass(event) {
-  const dropdownsContent = document.getElementsByClassName("dropdown-content");
   if (!event.target.nextElementSibling.className.includes("active")) {
+    filterDropdown.classList.remove("filter-dropdown-active");
     Array.from(dropdownsContent).forEach((el) => {
       if (el !== event.target.nextElementSibling) {
         el.classList.remove("active");
@@ -385,8 +438,6 @@ function quickSort(arr, field) {
   }
 }
 
-const sortingACSItems = document.getElementsByClassName("sort-asc");
-
 Array.from(sortingACSItems).forEach((item) => {
   item.addEventListener("click", (event) => {
     sortByASC(event, countries);
@@ -401,12 +452,11 @@ function sortByASC(event) {
   if (id === "code") {
     id = "phone_code";
   }
-  const rows = document.getElementsByClassName("row");
-  Array.from(rows).forEach((el) => el.remove());
-  quickSort(countries, id).forEach((el) => addContentToTable(el));
-}
 
-const sortingDESCItems = document.getElementsByClassName("sort-desc");
+  Array.from(rows).forEach((el) => el.remove());
+  arrayToShow = quickSort(countries, id);
+  showRows();
+}
 
 Array.from(sortingDESCItems).forEach((item) => {
   item.addEventListener("click", (event) => {
@@ -422,32 +472,24 @@ function sortByDESC(event) {
   if (id === "code") {
     id = "phone_code";
   }
-  const rows = document.getElementsByClassName("row");
   Array.from(rows).forEach((el) => el.remove());
-  quickSort(countries, id)
-    .reverse()
-    .forEach((el) => addContentToTable(el));
+  arrayToShow = quickSort(countries, id).reverse();
+  showRows();
 }
 
 //FILTERING
 
-const rows = document.getElementsByClassName("row");
-const filteringItems = document.getElementsByClassName("filter");
-const filterDropdown = document.getElementById("filter");
-const filterSelectColumns = document.getElementById("filter-select-columns");
-const filterSelectOperators = document.getElementById(
-  "filter-select-operators"
-);
-const filterInput = document.getElementById("filter-input");
-const filterButton = document.getElementById("filter-button");
-let column = "name";
-let operator = "contains";
-let inputValue;
-
 Array.from(filteringItems).forEach((item) => {
-  item.addEventListener("click", (event) => {
-    filterDropdown.classList.add("filter-dropdown-active");
-  });
+  item.addEventListener(
+    "click",
+    (event) => {
+      Array.from(dropdownsContent).forEach((el) => {
+        el.classList.remove("active");
+      });
+      filterDropdown.classList.add("filter-dropdown-active");
+    },
+    true
+  );
 });
 
 filterSelectColumns.addEventListener("change", (event) => {
@@ -493,20 +535,18 @@ filterInput.addEventListener("input", (event) => {
   }
 
   Array.from(rows).forEach((el) => el.remove());
-  filteredArr.forEach((el) => addContentToTable(el));
+  arrayToShow = JSON.parse(JSON.stringify(filteredArr));
+  showRows();
 });
 
-const filterCross = document.querySelector(".filter-cross");
 filterCross.addEventListener("click", (event) => {
   Array.from(rows).forEach((el) => el.remove());
-  countries.forEach((el) => addContentToTable(el));
+  showRows();
   inputValue = "";
   filterDropdown.classList.remove("filter-dropdown-active");
 });
 
 //HIDING OF COLUMN
-
-const hidingColumnItems = document.getElementsByClassName("hide-column");
 
 Array.from(hidingColumnItems).forEach((item) => {
   item.addEventListener("click", (event) => {
@@ -530,8 +570,6 @@ function hideColumn(event) {
 
 //SHOWING OF COLUMNS
 
-const showingColumnsItems = document.getElementsByClassName("show-columns");
-
 Array.from(showingColumnsItems).forEach((item) => {
   item.addEventListener("click", (event) => {
     showColumns(event);
@@ -542,3 +580,35 @@ function showColumns(event) {
   const id = event.target.parentElement.parentElement.id.slice(9);
   console.log(`Show Show/Hide column menu from ${id}`);
 }
+
+//PAGINATION
+
+amountOfRowsSelector.addEventListener("change", (event) => {
+  Array.from(rows).forEach((el) => el.remove());
+  amountOfRows = Number(event.target.value);
+  showRows();
+  paginationInfoP.innerText = `Page: ${page} of ${maxAmountOfPages}`;
+});
+
+backButton.addEventListener("click", () => {
+  if (page === 1) {
+    paginationInfoP.innerText = `Page: 1 of ${maxAmountOfPages}`;
+  }
+  if (page < firstIndexToShow + 1) {
+    paginationInfoP.innerText = `Page: ${page} of ${maxAmountOfPages}`;
+    page = page - 1;
+    firstIndexToShow = firstIndexToShow - amountOfRows;
+    Array.from(rows).forEach((el) => el.remove());
+    showRows();
+  }
+});
+
+forwardButton.addEventListener("click", () => {
+  if (page < maxAmountOfPages) {
+    paginationInfoP.innerText = `Page: ${page - -1} of ${maxAmountOfPages}`;
+    page = page + 1;
+    firstIndexToShow = firstIndexToShow + amountOfRows;
+    Array.from(rows).forEach((el) => el.remove());
+    showRows();
+  }
+});
