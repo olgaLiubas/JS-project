@@ -312,10 +312,10 @@ function addContentToTable(el) {
             <div class="checkbox"><input type="checkbox" name="checkbox-row"></div>
             <div class="id"><p>${el.id}</p></div>
             <div class="name"><p>${el.name}</p></div>
-            <div class="iso"><p>${el.iso3}</p></div>
+            <div class="capital"><p>${el.capital}</p></div>
             <div class="code"><p>${el.phone_code}</p></div>
             <div class="currency">${el.currency}<p></p></div>
-            <div class="capital"><p>${el.capital}</p></div>
+            <div class="iso"><p>${el.iso3}</p></div>
         </div>
     `
   );
@@ -326,7 +326,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
 });
 
 //DROPDOWNS LOGIC
-
+// const filterDropdown = document.getElementById("filter");
 const dropdowns = document.querySelectorAll(".dropdown");
 dropdowns.forEach((dropdown) => {
   dropdown.addEventListener("click", (event) => {
@@ -431,18 +431,80 @@ function sortByDESC(event) {
 
 //FILTERING
 
+const rows = document.getElementsByClassName("row");
 const filteringItems = document.getElementsByClassName("filter");
+const filterDropdown = document.getElementById("filter");
+const filterSelectColumns = document.getElementById("filter-select-columns");
+const filterSelectOperators = document.getElementById(
+  "filter-select-operators"
+);
+const filterInput = document.getElementById("filter-input");
+const filterButton = document.getElementById("filter-button");
+let column = "name";
+let operator = "contains";
+let inputValue;
 
 Array.from(filteringItems).forEach((item) => {
   item.addEventListener("click", (event) => {
-    filterRows(event);
+    filterDropdown.classList.add("filter-dropdown-active");
   });
 });
 
-function filterRows(event) {
-  const id = event.target.parentElement.parentElement.id.slice(9);
-  console.log(`Filter rows from ${id}`);
-}
+filterSelectColumns.addEventListener("change", (event) => {
+  let value = event.target.value;
+  value === "Name" ? (column = "name") : null;
+  value === "Capital" ? (column = "capital") : null;
+  value === "Phone code" ? (column = "phone_code") : null;
+  value === "Currency" ? (column = "currency") : null;
+  value === "ISO" ? (column = "iso3") : null;
+});
+
+filterSelectOperators.addEventListener("change", (event) => {
+  operator = event.target.value;
+  console.log(operator);
+});
+
+filterInput.addEventListener("input", (event) => {
+  inputValue = event.target.value;
+  let filteredArr = [];
+  if (operator === "contains") {
+    filteredArr = countries.filter((el) =>
+      el[column].includes(`${inputValue}`)
+    );
+  }
+  if (operator === "equals") {
+    filteredArr = countries.filter((el) => el[column] === inputValue);
+  }
+  if (operator === "starts with") {
+    filteredArr = countries.filter(
+      (el) => el[column].slice(0, inputValue.length) === inputValue
+    );
+  }
+  if (operator === "ends with") {
+    filteredArr = countries.filter(
+      (el) => el[column].slice(-inputValue.length) === inputValue
+    );
+  }
+  if (operator === "is empty") {
+    filteredArr = countries.filter((el) => el[column] === "");
+  }
+  if (operator === "isn't empty") {
+    filteredArr = countries.filter((el) => el[column] !== "");
+  }
+
+  Array.from(rows).forEach((el) => el.remove());
+  filteredArr.forEach((el) => addContentToTable(el));
+});
+
+const filterCross = document.querySelector(".filter-cross");
+filterCross.addEventListener("click", (event) => {
+  Array.from(rows).forEach((el) => el.remove());
+  countries.forEach((el) => addContentToTable(el));
+  inputValue = "";
+  filterDropdown.classList.remove("filter-dropdown-active");
+});
+
+//HIDING OF COLUMN
 
 const hidingColumnItems = document.getElementsByClassName("hide-column");
 
@@ -465,6 +527,8 @@ function hideColumn(event) {
     field.hidden = true;
   });
 }
+
+//SHOWING OF COLUMNS
 
 const showingColumnsItems = document.getElementsByClassName("show-columns");
 
