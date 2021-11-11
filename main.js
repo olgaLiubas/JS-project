@@ -370,8 +370,13 @@ document.addEventListener("DOMContentLoaded", (event) => showRows(countries));
 function showRows() {
   maxAmountOfPages =
     (arrayToShow.length - (arrayToShow.length % amountOfRows)) / amountOfRows;
-  for (let i = firstIndexToShow; i < firstIndexToShow + amountOfRows; i++) {
-    addContentToTable(arrayToShow[i]);
+
+  try {
+    for (let i = firstIndexToShow; i < firstIndexToShow + amountOfRows; i++) {
+      addContentToTable(arrayToShow[i]);
+    }
+  } catch (e) {
+    console.log("Another elements weren't found!");
   }
 }
 
@@ -541,8 +546,8 @@ filterInput.addEventListener("input", (event) => {
 
 filterCross.addEventListener("click", (event) => {
   Array.from(rows).forEach((el) => el.remove());
+  arrayToShow = countries;
   showRows();
-  inputValue = "";
   filterDropdown.classList.remove("filter-dropdown-active");
 });
 
