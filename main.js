@@ -53,18 +53,22 @@ let firstIndexToShow = 0;
 //FETCHING DATA
 
 async function getData() {
-  countries = await fetch("http://localhost:3000/countries", {
-    method: "GET",
-    headers: {
-      "Content-type": "application/json; charset=UTF-8",
-    },
-  })
-    .then((response) => response.json())
-    .then((data) => data);
+  try {
+    countries = await fetch("http://localhost:3000/countries", {
+      method: "GET",
+      headers: {
+        "Content-type": "application/json; charset=UTF-8",
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => data);
 
-  if (counterOfFetching === 1) {
-    arrayToShow = JSON.parse(JSON.stringify(countries));
-    counterOfFetching++;
+    if (counterOfFetching === 1) {
+      arrayToShow = JSON.parse(JSON.stringify(countries));
+      counterOfFetching++;
+    }
+  } catch (e) {
+    alert("Failed to fetch. Try again later!");
   }
 }
 
