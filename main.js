@@ -39,7 +39,6 @@ const hidingColumnItems = document.getElementsByClassName("hide-column");
 const showingColumnsItems = document.getElementsByClassName("show-columns");
 
 //pagination
-// let arrayToShow = JSON.parse(JSON.stringify(countries));
 const amountOfRowsSelector = document.querySelector(".amount-of-rows");
 const paginationInfoP = document.querySelector(".pagination-info");
 const backButton = document.querySelector(".back-button");
@@ -49,6 +48,17 @@ let paginationInfo = "Page: 1 of 1";
 let page = 1;
 let maxAmountOfPages = 1;
 let firstIndexToShow = 0;
+
+//editing
+const modal = document.getElementById("myModal");
+const cancelButton = document.getElementById("cancel-modal-button");
+const changeButton = document.getElementById("change-modal-button");
+const modalId = document.querySelector(".id-modal");
+const modalName = document.querySelector(".name-modal");
+const modalCapital = document.querySelector(".capital-modal");
+const modalPhoneCode = document.querySelector(".phone_code-modal");
+const modalCurrency = document.querySelector(".currency-modal");
+const modalIso = document.querySelector(".iso3-modal");
 
 //FETCHING DATA
 
@@ -61,7 +71,7 @@ async function getData() {
       },
     })
       .then((response) => response.json())
-      .then((data) => data);
+      .then((data) => quickSort(data, "id"));
 
     if (counterOfFetching === 1) {
       arrayToShow = JSON.parse(JSON.stringify(countries));
@@ -84,8 +94,9 @@ function addContentToTable(el) {
             <div class="name"><p>${el.name}</p></div>
             <div class="capital"><p>${el.capital}</p></div>
             <div class="code"><p>${el.phone_code}</p></div>
-            <div class="currency">${el.currency}<p></p></div>
+            <div class="currency"><p>${el.currency}</p></div> 
             <div class="iso"><p>${el.iso3}</p></div>
+            <p class="edit" onclick="showEditForm(event)" >🖊️</p>
         </div>
     `
   );
@@ -180,6 +191,7 @@ Array.from(sortingACSItems).forEach((item) => {
 
 function sortByASC(event) {
   let id = event.target.parentElement.parentElement.id.slice(9);
+  console.log(id);
   if (id === "iso") {
     id = "iso3";
   }
@@ -317,6 +329,8 @@ function showColumns(event) {
 //PAGINATION
 
 amountOfRowsSelector.addEventListener("change", (event) => {
+  page = 1;
+  firstIndexToShow = 0;
   Array.from(rows).forEach((el) => el.remove());
   amountOfRows = Number(event.target.value);
   showRows();
@@ -345,3 +359,59 @@ forwardButton.addEventListener("click", () => {
     showRows();
   }
 });
+
+//EDITING
+
+function showEditForm(e) {
+  modal.style.display = "flex";
+
+  const arrayOfRowElements = e.target.parentElement.children;
+  const idOfRow = searchElementOfRow(arrayOfRowElements, "id");
+  const nameOfRow = searchElementOfRow(arrayOfRowElements, "name");
+  const capitalOfRow = searchElementOfRow(arrayOfRowElements, "capital");
+  const phoneCodeOfRow = searchElementOfRow(arrayOfRowElements, "code");
+  const currencyOfRow = searchElementOfRow(arrayOfRowElements, "currency");
+  const isoOfRow = searchElementOfRow(arrayOfRowElements, "iso");
+
+  modalId.innerText = `${idOfRow}`;
+  modalName.value = `${nameOfRow}`;
+  modalCapital.value = `${capitalOfRow}`;
+  modalPhoneCode.value = `${phoneCodeOfRow}`;
+  modalCurrency.value = `${currencyOfRow}`;
+  modalIso.value = `${isoOfRow}`;
+}
+
+function searchElementOfRow(arr, clas) {
+  return Array.from(arr).find((el) => el.className === clas).firstElementChild
+    .innerText;
+}
+
+cancelButton.addEventListener("click", (event) => {
+  modal.style.display = "none";
+});
+
+changeButton.addEventListener("click", (event) => {
+  postData();
+  modal.style.display = "none";
+});
+
+async function postData() {
+  const country = countries.find((el) => el.id === Number(modalId.innerText));
+  await fetch(`http://localhost:3000/countries/${Number(modalId.innerText)}`, {
+    method: "PUT",
+    headers: {
+      "Content-type": "application/json; charset=UTF-8",
+    },
+    body: JSON.stringify({
+      ...country,
+      name: modalName.value,
+      capital: modalCapital.value,
+      phone_code: modalPhoneCode.value,
+      currency: modalCurrency.value,
+      iso3: modalIso.value,
+    }),
+  }).then((resp) => console.log(resp));
+  counterOfFetching = 1;
+  await showRows();
+  modal.style.display = "none";
+}
