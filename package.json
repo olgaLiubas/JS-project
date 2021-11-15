@@ -1,0 +1,22 @@
+{
+  "name": "table",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/olgaLiubas/JS-project.git"
+  },
+  "author": "Olha Liubas",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/olgaLiubas/JS-project/issues"
+  },
+  "homepage": "https://github.com/olgaLiubas/JS-project#readme",
+  "devDependencies": {
+    "json-server": "^0.17.0"
+  }
+}
