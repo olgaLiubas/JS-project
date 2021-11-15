@@ -366,19 +366,13 @@ function showEditForm(e) {
   modal.style.display = "flex";
 
   const arrayOfRowElements = e.target.parentElement.children;
-  const idOfRow = searchElementOfRow(arrayOfRowElements, "id");
-  const nameOfRow = searchElementOfRow(arrayOfRowElements, "name");
-  const capitalOfRow = searchElementOfRow(arrayOfRowElements, "capital");
-  const phoneCodeOfRow = searchElementOfRow(arrayOfRowElements, "code");
-  const currencyOfRow = searchElementOfRow(arrayOfRowElements, "currency");
-  const isoOfRow = searchElementOfRow(arrayOfRowElements, "iso");
 
-  modalId.innerText = `${idOfRow}`;
-  modalName.value = `${nameOfRow}`;
-  modalCapital.value = `${capitalOfRow}`;
-  modalPhoneCode.value = `${phoneCodeOfRow}`;
-  modalCurrency.value = `${currencyOfRow}`;
-  modalIso.value = `${isoOfRow}`;
+  modalId.innerText = searchElementOfRow(arrayOfRowElements, "id");
+  modalName.value = searchElementOfRow(arrayOfRowElements, "name");
+  modalCapital.value = searchElementOfRow(arrayOfRowElements, "capital");
+  modalPhoneCode.value = searchElementOfRow(arrayOfRowElements, "code");
+  modalCurrency.value = searchElementOfRow(arrayOfRowElements, "currency");
+  modalIso.value = searchElementOfRow(arrayOfRowElements, "iso");
 }
 
 function searchElementOfRow(arr, clas) {
@@ -396,22 +390,29 @@ changeButton.addEventListener("click", (event) => {
 });
 
 async function postData() {
+  const url = `http://localhost:3000/countries/${Number(modalId.innerText)}`;
   const country = countries.find((el) => el.id === Number(modalId.innerText));
-  await fetch(`http://localhost:3000/countries/${Number(modalId.innerText)}`, {
-    method: "PUT",
-    headers: {
-      "Content-type": "application/json; charset=UTF-8",
-    },
-    body: JSON.stringify({
-      ...country,
-      name: modalName.value,
-      capital: modalCapital.value,
-      phone_code: modalPhoneCode.value,
-      currency: modalCurrency.value,
-      iso3: modalIso.value,
-    }),
-  }).then((resp) => console.log(resp));
-  counterOfFetching = 1;
-  await showRows();
+  try {
+    await fetch(url, {
+      method: "PUT",
+      headers: {
+        "Content-type": "application/json; charset=UTF-8",
+      },
+      body: JSON.stringify({
+        ...country,
+        name: modalName.value,
+        capital: modalCapital.value,
+        phone_code: modalPhoneCode.value,
+        currency: modalCurrency.value,
+        iso3: modalIso.value,
+      }),
+    });
+    counterOfFetching = 1;
+    Array.from(rows).forEach((el) => el.remove());
+    await showRows();
+  } catch (e) {
+    alert("Failed to fetch. Try again later!");
+  }
+
   modal.style.display = "none";
 }
