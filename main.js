@@ -1,10 +1,12 @@
 //COMMAND TO START SERVER npx json-server --watch db.json
+//START SERVER WITH MIDLEWARE npx json-server db.json --middlewares ./cors.js
+
 //ALL VARIABLES
 
 //fetching
-let counterOfFetching = 1;
 let countries;
-let arrayToShow;
+let url =
+  "http://localhost:3000/countries?_sort=id&_order=asc&_limit=20&_page=1";
 
 //to rendering rows
 const tableWrapper = document.querySelector(".table-wrapper");
@@ -44,10 +46,8 @@ const paginationInfoP = document.querySelector(".pagination-info");
 const backButton = document.querySelector(".back-button");
 const forwardButton = document.querySelector(".forward-button");
 let amountOfRows = 20;
-let paginationInfo = "Page: 1 of 1";
 let page = 1;
 let maxAmountOfPages = 1;
-let firstIndexToShow = 0;
 
 //editing
 const modal = document.getElementById("myModal");
@@ -64,21 +64,29 @@ const modalIso = document.querySelector(".iso3-modal");
 
 async function getData() {
   try {
-    countries = await fetch("http://localhost:3000/countries", {
+    let response = await fetch(url, {
       method: "GET",
       headers: {
         "Content-type": "application/json; charset=UTF-8",
       },
-    })
-      .then((response) => response.json())
-      .then((data) => quickSort(data, "id"));
-
-    if (counterOfFetching === 1) {
-      arrayToShow = JSON.parse(JSON.stringify(countries));
-      counterOfFetching++;
-    }
+    });
+    countries = await response.json();
   } catch (e) {
     alert("Failed to fetch. Try again later!");
+  }
+}
+
+function createURL(action = "sort", column = "id", order = "asc", value) {
+  if (action === "sort") {
+    url = `http://localhost:3000/countries?_sort=${column}&_order=${order}&_limit=${amountOfRows}&_page=${page}`;
+  }
+  if (action === "filter") {
+    if (operator === "contains") {
+      url = `http://localhost:3000/countries?${column}_like=${value}`;
+    }
+    if (operator === "equals") {
+      url = `http://localhost:3000/countries?${column}=${value}&_limit=${amountOfRows}&_page=${page}`;
+    }
   }
 }
 
@@ -105,16 +113,10 @@ function addContentToTable(el) {
 document.addEventListener("DOMContentLoaded", (event) => showRows());
 
 async function showRows() {
-  if (counterOfFetching === 1) {
-    await getData();
-  }
-  maxAmountOfPages =
-    (arrayToShow.length - (arrayToShow.length % amountOfRows)) / amountOfRows;
-
+  await getData();
+  maxAmountOfPages = Math.ceil(250 / amountOfRows);
   try {
-    for (let i = firstIndexToShow; i < firstIndexToShow + amountOfRows; i++) {
-      addContentToTable(arrayToShow[i]);
-    }
+    countries.forEach((country) => addContentToTable(country));
   } catch (e) {
     console.log("Another elements weren't found!");
   }
@@ -148,41 +150,6 @@ function addActiveClass(event) {
 
 // SORTING BY ASC/DESC
 
-function quickSort(arr, field) {
-  if (arr.length < 2) {
-    return arr;
-  } else {
-    const pivotPosition = Math.floor(Math.random() * arr.length);
-    const pivot = arr[pivotPosition];
-    let less = [];
-    let more = [];
-    if (field === "phone_code") {
-      less = arr.filter((value, index) => {
-        const isPivot = index === pivotPosition;
-        return (
-          !isPivot &&
-          value[field].replace(/[-+!@#$%^&*]/g, "") <=
-            pivot[field].replace(/[-+!@#$%^&*]/g, "")
-        );
-      });
-
-      more = arr.filter(
-        (value) =>
-          value[field].replace(/[-+!@#$%^&*]/g, "") >
-          pivot[field].replace(/[-+!@#$%^&*]/g, "")
-      );
-    } else {
-      less = arr.filter((value, index) => {
-        const isPivot = index === pivotPosition;
-        return !isPivot && value[field] <= pivot[field];
-      });
-
-      more = arr.filter((value) => value[field] > pivot[field]);
-    }
-    return [...quickSort(less, field), pivot, ...quickSort(more, field)];
-  }
-}
-
 Array.from(sortingACSItems).forEach((item) => {
   item.addEventListener("click", (event) => {
     sortByASC(event, countries);
@@ -198,9 +165,8 @@ function sortByASC(event) {
   if (id === "code") {
     id = "phone_code";
   }
-
+  createURL("sort", id, "asc");
   Array.from(rows).forEach((el) => el.remove());
-  arrayToShow = quickSort(countries, id);
   showRows();
 }
 
@@ -218,8 +184,8 @@ function sortByDESC(event) {
   if (id === "code") {
     id = "phone_code";
   }
+  createURL("sort", id, "desc");
   Array.from(rows).forEach((el) => el.remove());
-  arrayToShow = quickSort(countries, id).reverse();
   showRows();
 }
 
@@ -253,40 +219,14 @@ filterSelectOperators.addEventListener("change", (event) => {
 
 filterInput.addEventListener("input", (event) => {
   inputValue = event.target.value;
-  let filteredArr = [];
-  if (operator === "contains") {
-    filteredArr = countries.filter((el) =>
-      el[column].includes(`${inputValue}`)
-    );
-  }
-  if (operator === "equals") {
-    filteredArr = countries.filter((el) => el[column] === inputValue);
-  }
-  if (operator === "starts with") {
-    filteredArr = countries.filter(
-      (el) => el[column].slice(0, inputValue.length) === inputValue
-    );
-  }
-  if (operator === "ends with") {
-    filteredArr = countries.filter(
-      (el) => el[column].slice(-inputValue.length) === inputValue
-    );
-  }
-  if (operator === "is empty") {
-    filteredArr = countries.filter((el) => el[column] === "");
-  }
-  if (operator === "isn't empty") {
-    filteredArr = countries.filter((el) => el[column] !== "");
-  }
-
+  createURL("filter", column, "asc", inputValue);
   Array.from(rows).forEach((el) => el.remove());
-  arrayToShow = JSON.parse(JSON.stringify(filteredArr));
   showRows();
 });
 
 filterCross.addEventListener("click", (event) => {
+  createURL("sort", "id", "asc");
   Array.from(rows).forEach((el) => el.remove());
-  arrayToShow = countries;
   showRows();
   filterDropdown.classList.remove("filter-dropdown-active");
 });
@@ -330,21 +270,20 @@ function showColumns(event) {
 
 amountOfRowsSelector.addEventListener("change", (event) => {
   page = 1;
-  firstIndexToShow = 0;
   Array.from(rows).forEach((el) => el.remove());
   amountOfRows = Number(event.target.value);
+  createURL();
+  maxAmountOfPages = Math.ceil(250 / amountOfRows);
+  Array.from(rows).forEach((el) => el.remove());
   showRows();
   paginationInfoP.innerText = `Page: ${page} of ${maxAmountOfPages}`;
 });
 
 backButton.addEventListener("click", () => {
-  if (page === 1) {
-    paginationInfoP.innerText = `Page: 1 of ${maxAmountOfPages}`;
-  }
-  if (page < firstIndexToShow + 1) {
-    paginationInfoP.innerText = `Page: ${page} of ${maxAmountOfPages}`;
+  if (page > 1) {
     page = page - 1;
-    firstIndexToShow = firstIndexToShow - amountOfRows;
+    paginationInfoP.innerText = `Page: ${page} of ${maxAmountOfPages}`;
+    createURL();
     Array.from(rows).forEach((el) => el.remove());
     showRows();
   }
@@ -352,9 +291,9 @@ backButton.addEventListener("click", () => {
 
 forwardButton.addEventListener("click", () => {
   if (page < maxAmountOfPages) {
-    paginationInfoP.innerText = `Page: ${page - -1} of ${maxAmountOfPages}`;
     page = page + 1;
-    firstIndexToShow = firstIndexToShow + amountOfRows;
+    paginationInfoP.innerText = `Page: ${page} of ${maxAmountOfPages}`;
+    createURL();
     Array.from(rows).forEach((el) => el.remove());
     showRows();
   }
@@ -407,7 +346,6 @@ async function postData() {
         iso3: modalIso.value,
       }),
     });
-    counterOfFetching = 1;
     Array.from(rows).forEach((el) => el.remove());
     await showRows();
   } catch (e) {
